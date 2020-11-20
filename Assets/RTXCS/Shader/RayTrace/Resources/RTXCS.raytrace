@@ -1,0 +1,75 @@
+﻿RWTexture2D<float4> RenderTarget;
+
+#pragma max_recursion_depth 1
+#include "Common.cginc";
+float3 _WSCP; 
+float3 _TopLeftFrustumDir;
+float3 _TopRightFrustumDir;
+float3 _BottomLeftFrustumDir;
+float3 _BottomRightFrustumDir;
+float _RayLength;
+vector _Sun;
+
+[shader("raygeneration")]
+void RayGen()
+{
+
+	// current pixel
+	uint2 dispatchIdx = DispatchRaysIndex().xy;
+	// target resolution
+	uint2 launchDim = DispatchRaysDimensions().xy;
+
+	float2 uv = (float2)dispatchIdx / (float2)launchDim;
+	
+	// translate screen uv to ray direction
+	float3 topHorizontalRayDir = lerp(_TopLeftFrustumDir, _TopRightFrustumDir, uv.x);
+	float3 bottomHorizontalRayDir = lerp(_BottomLeftFrustumDir, _BottomRightFrustumDir, uv.x);
+	float3 pixelRayDir = normalize(lerp(bottomHorizontalRayDir, topHorizontalRayDir, uv.y));
+
+RayDesc ray;
+ray.Origin = _WSCP;
+ray.Direction = normalize( pixelRayDir );
+ray.TMin = 0.001f;
+ray.TMax = 100.0f;
+RayPayload payload;
+payload.pos = float3(0,0,0);
+payload.normal = float3(0,0,0);
+payload.hit = false;
+TraceRay(_RTAS, RAY_FLAG_NONE, RAYTRACING_OPAQUE_FLAG, 0, 1, 0, ray, payload);
+float cs = 0;
+if(payload.hit==true){
+
+
+
+RayDesc csRay;
+csRay.TMin = 0.0001f;
+csRay.TMax = _RayLength;
+csRay.Origin = payload.pos;
+csRay.Direction =-_Sun.xyz;
+RayPayload csPayload;
+csPayload.hit = false;
+
+TraceRay(_RTAS, RAY_FLAG_NONE, RAYTRACING_OPAQUE_FLAG, 0, 1, 0, csRay, csPayload);
+if(csPayload.hit){
+cs = 1;
+}
+
+}
+	
+                
+         
+RenderTarget[dispatchIdx] = abs(float4(1,1,1,1))-cs;
+
+}
+
+	[shader("closesthit")]
+	void ClosestHit(inout RayPayload rayPayload : SV_RayPayload, AttributeData attributeData : SV_IntersectionAttributes)
+	{
+			
+	}	
+
+[shader("miss")]
+void RayMiss(inout RayPayload data){
+data.pos = float3(0,0,0);
+data.hit = false;
+}
