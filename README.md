@@ -20,3 +20,4 @@ I developed this using a RTX 2060, using Unity version 2020.1.2f1.
 
 # Extra note
 Yes, this can be used as a regular hard shadow solution as the ray length can be extended to infinity. Feel free to use it in any way you like!
+To disable regular shadows and not break the ray traced ones, enable shadows in the light but set Shadow Intensity to 0.
