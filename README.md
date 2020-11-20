@@ -1,6 +1,7 @@
 # RayTracedContactShadows
  Ray Traced Contact Shadows (DXR) for Unity's Built in render pipeline.
 
+https://cdn.discordapp.com/attachments/755854193054449665/779404497062723614/unknown.png
 
 # Usage
 Add the RTXCS component to your main camera, assign the main directional light in the scene to the Sun parameter,
