@@ -17,3 +17,6 @@ shadow buffer with the contact shadows.
 # Requirements
 As this works with DXR, it wont work on graphic cards that dont support DirectX Ray Tracing, such as Nvidia´s 2000 series or newer or AMD´s 6000 series.
 I developed this using a RTX 2060, using Unity version 2020.1.2f1.
+
+# Extra note
+Yes, this can be used as a regular hard shadow solution as the ray length can be extended to infinity. Feel free to use it in any way you like!
